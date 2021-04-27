@@ -4,7 +4,7 @@ function ExplicitEulerIter(n)
         for k = 0:n
             a(k+1,1) = k; 
             a(k+1,2) = 2^(-k); 
-            a(k+1,3) = explicitEuler(0,1,a(k+1,2),2^(k+1));
+            a(k+1,3) = explicitEuler(0,1,a(k+1,2),2^(k+1),@f);
             if k+1 > 1
                 a(k+1,4) = a(k+1,3)-a(k,3);
             end
@@ -18,9 +18,13 @@ function ExplicitEulerIter(n)
     disp(a)
 end
 
-function y_n = explicitEuler(t_0,u_0,h,N)
+function y = f(x)
+    y = cos(x*pi/2)-2*x;
+end
+
+function y_n = explicitEuler(t_0,u_0,h,N,f)
     y_n = u_0; 
     for n = 1:N 
-        y_n = y_n + h*(cos(y_n*pi/2)-2*y_n);
+        y_n = y_n + h*f(y_n);
     end
 end  
