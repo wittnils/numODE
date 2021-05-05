@@ -18,7 +18,7 @@ function witt_borowitz_sheet3
 	% 	1. Modified Euler Method
 	printAnalysis(@modifiedEuler, f, t0, u0, K, T);
 	%	2. Heun Method
-	printAnalysis(@heun, f, t1, u0, K, T);
+	printAnalysis(@heun, f, t0, u0, K, T);
 end
 
 %
@@ -91,7 +91,7 @@ function printAnalysis(osm, f, t0, u0, K, T)
 		end
 	end
 
-	disp("   k         h     yhN_k    Diff     a_k");
+	disp("   k         h        yhN_k       Diff       a_k");
 	disp(R);
 
 end
