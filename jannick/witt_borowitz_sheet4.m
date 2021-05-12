@@ -28,8 +28,8 @@ function witt_borowitz_sheet4(initialvalue, T, A, b, c)
 	plot(y(1,:), y(2,:));
 
 	% TESTING against lsode (octave)
-	 x = lsode("lotka", initialvalue, T);
-	 plot(x(:,1), x(:,2));
+	% x = lsode("lotka", initialvalue, T);
+	% plot(x(:,1), x(:,2));
 
 	xlabel("y_1");
 	ylabel("y_2");
