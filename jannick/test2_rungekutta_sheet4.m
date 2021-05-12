@@ -8,7 +8,7 @@ function test2_rungekutta_sheet4
 
 	T = linspace(0,300,1000);
 
-	for i = [1::10]
+	for i = [1:10]
 		initialvalue = [0.5*i,1]
 		witt_borowitz_sheet4(initialvalue, T, A, b, c)
 	end
