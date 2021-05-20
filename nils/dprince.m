@@ -1,5 +1,22 @@
 % b_1 and b_2 are the different quadrature weights. 
-function [T,y] = rungeKutta(f, I, initialvalue, epsilon)
+function dprince(I,initialvalue,epsilon)
+	% solving lottka volterra
+	
+	figure
+	hold on
+	[T,y] = stepsizecontrolled(I,initialvalue,epsilon);
+	plot(y(1,:), y(2,:));
+
+	% TESTING against lsode (octave)
+	% x = lsode("lotka", initialvalue, T);
+	% plot(x(:,1), x(:,2));
+
+	xlabel("y_1");
+	ylabel("y_2");
+	title("Lotka-Volterra");
+end
+
+function [T,y] = stepsizecontrolled(I, initialvalue, epsilon)
     A = [0,0,0,0,0,0,0;
          0.2,0,0,0,0,0,0;
          3./40,9./40,0,0,0,0,0;
@@ -13,14 +30,11 @@ function [T,y] = rungeKutta(f, I, initialvalue, epsilon)
     
     
     % dimension of the IVP, starting value t_0 is left end of intervall I
-    d = size(initialvalue)(1)
-    T=[I(1)];
-
 	% some convienince transpositions
 	if size(initialvalue,2) > 1
 		initialvalue = initialvalue';
 	end
-
+    
 	if size(b,1) > 1
 		b = b';
 	end
@@ -29,45 +43,46 @@ function [T,y] = rungeKutta(f, I, initialvalue, epsilon)
 		c = c';
 	end
 
+    T=[I(1)];
+    d = size(initialvalue)(1)
 	% storing solutions
     x = zeros(d,2);	
 	y = [initialvalue];
-
-    % setting initial parameters
-    y_0 = initialvalue; 
+    % setting initial parameters 
     t = T(1);
-
+    h_optimal = 0;
     % h_opt is = 0, this way we can ensure the algorithm does indeed start. 
-    h = 0.1;
-
-    while t < I(1) 
+    h = min(0.1, I(2)-I(1));;
+    j=2; 
+    while t < I(2)
         % compute two soln of the IVP w/ given starting values (t,y_0), x(1) has been computed w/ b_tilde and x(2) w/ b
-        x = one_step(f,h,A,b,b_tilde,c,d,y_0,t);
-        while abs(x(1)-x(2)) > epsilon
-            h = h*(epsilon/abs(x(1)-x⁽(2)))^(1./8);
-            x = one_step(f,h,A,b,b_tilde,c,d,y_0,t);
-        end
         
-        % setting h = h_opt since at this point the value for h has not been rejected. 
-        if I(1)-t <= 1.1*h*(epsilon/abs(x(1)-x⁽(2)))^(1./8)
-            h = I(1)-t; 
+        [x1,x2] = one_step(@f,h,A,b,b_tilde,c,d,y(:,j-1),t);
+        h_optimal =  h_opt(h,x1,x2,epsilon);
+
+        if norm(x1-x2) > epsilon
+            % reject
+            h = h_optimal;
+        else
+            % accept
+            if I(2)-t <= 1.1*h_optimal
+                h = min(I(2)-t,h_optimal); 
+            else 
+                h = h_optimal;
+            end
+            T(j)=t+h;
+            y(:,j)=x2;
+
+            t = T(j);
+            j+=1;
         end
-        h = h*(epsilon/abs(x(1)-x⁽(2)))^(1./8);
-
-        % store time value
-        T = [T;t+h];
-        % add y_tilde to the soln vector 
-        y = [y;x(1)];
-
-        % set parameters for next computation
-        t = T(rows(T));
-        y0 = y(rows(y));
+        % setting h = h_opt since at this point the value for h has not been rejected. 
     end
 end
 
 % turn this into a funciton: s = 7 since DP45 is a 7-stage-method
 % h=current step size, A = matrix for coeffs, b,b_tilde = quadrature weights, c=interpolation points, (t_0,y_0) initial data
-function x = one_step(f,h,A,b,b_tilde,c,d,y0,t0) 
+function [x1,x2] = one_step(f,h,A,b,b_tilde,c,d,y0,t0) 
     k= zeros(d,7);
 	for i = 1:7
 		% compute g_i
@@ -80,11 +95,20 @@ function x = one_step(f,h,A,b,b_tilde,c,d,y0,t0)
 		k(:,i) = f(g, t0+c(i)*h);
 	end
 	% found y(t_j) and y_tilde(t_j)
-	y = y0 + h * sum((k.*b),2);
-    y_tilde = y0 + h * sum((k.*b_tilde),2);
-    x = [y_tilde,y]; 
+	x1 = y0 + h * sum((k.*b),2);
+    x2 = y0 + h * sum((k.*b_tilde),2); 
 end
 
-function y = f(x,t)
-    y = cos(x/2)-t;
+function xdot = f(x,t)
+a=1;
+b=1;
+c=1;
+d=1;
+xdot = zeros(2,1);
+xdot(1) = a*x(1)-b*x(1)*x(2);
+xdot(2) = c*x(1)*x(2)-d*x(2);
+end
+
+function h_optimal = h_opt(h,x1,x2,epsilon)
+    h_optimal = h*(epsilon/norm(x1-x2))^(1./8); 
 end 
