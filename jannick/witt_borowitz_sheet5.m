@@ -1,7 +1,8 @@
+% Sheet 5 - Witt, Borowitz
 function [T, y] = witt_borowitz_sheet5(f, I, u0, eps)
 
 
-	output_precision(10)
+	%output_precision(10)
 
 	A = 	[0,0,0,0,0,0,0;
 		1/5,0,0,0,0,0,0;
@@ -17,25 +18,11 @@ function [T, y] = witt_borowitz_sheet5(f, I, u0, eps)
 	
 	eps = 0.000001	
 
-	[T,y] = addaptiveStepSizeControlApprox(@lotka, [300, 1000], [0.5,1], eps, A, b1, b2, c, 4)
-	%disp(y);
-	figure 
-	plot(y(1,:), y(2,:))
-	xlabel("x1")
-	ylabel("x2")
-	title("Lotka Volterra")
-end
-
-% lottka volterra
-% implementation from sheet 1
-function xdot = lotka(x,t)
-a=1;
-b=1;
-c=1;
-d=1;
-xdot = zeros(2,1);
-xdot(1) = a*x(1)-b*x(1)*x(2);
-xdot(2) = c*x(1)*x(2)-d*x(2);
+	[T,y] = addaptiveStepSizeControlApprox(@lotka, I, u0, eps, A, b1, b2, c, 4);
+	
+	if size(u0, 2) > 1
+		y = y';
+	end
 end
 
 function [T,y] = addaptiveStepSizeControlApprox(f, I, u0, eps, A, b1, b2, c, p)
