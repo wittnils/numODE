@@ -18,7 +18,7 @@ function [T, y] = witt_borowitz_sheet5(f, I, u0, eps)
 	
 	eps = 0.000001	
 
-	[T,y] = addaptiveStepSizeControlApprox(@lotka, I, u0, eps, A, b1, b2, c, 4);
+	[T,y] = addaptiveStepSizeControlApprox(@f, I, u0, eps, A, b1, b2, c, 4);
 	
 	if size(u0, 2) > 1
 		y = y';
