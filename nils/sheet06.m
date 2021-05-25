@@ -1,8 +1,9 @@
-function [y,x] = sheet06(A,t0,tmax,u0,h)
+function x = sheet06(A,t0,tmax,u0,h)
     figure 
     hold on 
     [T,y] = implicitEuler(A,t0,tmax,u0,h);
     [T2,x] = explicitEuler(A,t0,tmax,u0,h);
+    plot(T,x(1,:));
 end
 
 % t_0 is inital time value, T is end time point, u_0 is inital value as column vector, h is step size, A is square matrix of the linear IVP 
