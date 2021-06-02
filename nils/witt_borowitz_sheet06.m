@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-function sheet06(t0,tmax,u0,h)
+function witt_borowitz_sheet06(t0,tmax,u0,h)
 
 	A = [-21 19 -20; 19 -21 20; 40 -40 -40]
     
@@ -29,14 +28,6 @@ function sheet06(t0,tmax,u0,h)
     #t = [t0:h:tmax]
     #plot(t, U)
 
-=======
-function x = sheet06(A,t0,tmax,u0,h)
-    figure 
-    hold on 
-    [T,y] = implicitEuler(A,t0,tmax,u0,h);
-    [T2,x] = explicitEuler(A,t0,tmax,u0,h);
-    plot(T,x(1,:));
->>>>>>> 198a40c665fa314b12b81193155c6bb459e515a4
 end
 
 % t_0 is inital time value, T is end time point, u_0 is inital value as column vector, h is step size, A is square matrix of the linear IVP 
