@@ -17,6 +17,7 @@ function sheet08(t_0,t_1,x0,y0,h)
     hold off
 end
 
+# these formulae arise due to rearranging the step-formula of implicit euler
 function y = implicitEuler(t_0,T,x0,y0,h)
     n = abs(T-t_0)/h;
     y = [[x0;y0]];
@@ -43,6 +44,7 @@ function y = explicitEuler(t_0,T,x0,y0,h)
     end 
 end
 
+# Here we made use of the fact that for this particular problem symplectic Euler is explicit
 function y = symplecticEuler(t_0,T,x0,y0,h)
     n = abs(T-t_0)/h;
     y = [[x0;y0]];
