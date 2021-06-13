@@ -3,7 +3,6 @@
 function sheet09()  
     [y1,d1,alpha1] = newton(@f,@jacobian,[1.2;1.2],0.001);
     [y2,d2,alpha2] = newton(@f,@jacobian,[0.001;0.005],0.001); 
-    y2(:,end)    
     figure 
     hold on 
     plot(y1(1,:),y1(2,:))
@@ -18,10 +17,8 @@ function [x,d,alpha] = newton(f,jacobian,x0,epsilon)
     while !(norm(f(x(:,end))) <= epsilon)
         k = 0; 
         d(:,end+1) = -inv(jacobian(x(:,end)))*f(x(:,end));
-        norm(f(x(:,end)))
         while (norm(f(x(:,end)+2.^(-k)*d(:,end))) >= norm(f(x(:,end))))
             k = k+1; 
-            k
         end 
         alpha(:,end+1) = 2.^(-k); 
         x(:,end+1) = x(:,end) + 2.^(-k)*d(:,end);  
